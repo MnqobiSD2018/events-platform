@@ -23,7 +23,7 @@
                     </div>
                     <div class="flex items-center gap-3 sm:gap-6">
                         @auth
-                            <a href="{{ url('/dashboard') }}" class="inline-flex items-center rounded-lg border border-teal-100 bg-teal-50/70 px-4 py-2 text-sm font-medium text-teal-900 hover:bg-teal-100/80 transition ease-in-out duration-150">
+                            <a href="{{ route('home') }}" class="inline-flex items-center rounded-lg border border-teal-100 bg-teal-50/70 px-4 py-2 text-sm font-medium text-teal-900 hover:bg-teal-100/80 transition ease-in-out duration-150">
                                 Dashboard
                             </a>
                         @else
@@ -54,7 +54,7 @@
                         </p>
                         <div class="mt-10 flex flex-col sm:flex-row gap-4 justify-center items-center">
                             @auth
-                                <a href="{{ url('/dashboard') }}" class="inline-flex items-center rounded-lg border border-teal-700 bg-teal-700 px-6 py-3 text-sm font-semibold text-white hover:bg-teal-600 transition duration-150">
+                                <a href="{{ route('home') }}" class="inline-flex items-center rounded-lg border border-teal-700 bg-teal-700 px-6 py-3 text-sm font-semibold text-white hover:bg-teal-600 transition duration-150">
                                     Open Dashboard →
                                 </a>
                             @else
@@ -174,7 +174,7 @@
                                 Already have an account?
                             </a>
                         @else
-                            <a href="{{ url('/dashboard') }}" class="inline-flex items-center rounded-lg border border-teal-700 bg-teal-700 px-8 py-3 text-base font-semibold text-white hover:bg-teal-600 transition duration-150">
+                            <a href="{{ route('home') }}" class="inline-flex items-center rounded-lg border border-teal-700 bg-teal-700 px-8 py-3 text-base font-semibold text-white hover:bg-teal-600 transition duration-150">
                                 Go to Dashboard
                             </a>
                         @endguest
