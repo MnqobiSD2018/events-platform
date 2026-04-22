@@ -17,6 +17,9 @@
                             <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                                 {{ __('Dashboard') }}
                             </x-nav-link>
+                            <x-nav-link :href="route('admin.notifications.index')" :active="request()->routeIs('admin.notifications.*')">
+                                {{ __('Notifications') }}
+                            </x-nav-link>
                             <x-nav-link :href="route('events.index')" :active="request()->routeIs('events.*')">
                                 {{ __('Events') }}
                             </x-nav-link>
@@ -28,6 +31,9 @@
                         @if (Auth::user()->isEmployee())
                             <x-nav-link :href="route('employee.home')" :active="request()->routeIs('employee.home')">
                                 {{ __('Home') }}
+                            </x-nav-link>
+                            <x-nav-link :href="route('employee.notifications.index')" :active="request()->routeIs('employee.notifications.*')">
+                                {{ __('Notifications') }}
                             </x-nav-link>
                             <x-nav-link :href="route('employee.activities.index')" :active="request()->routeIs('employee.activities.*')">
                                 {{ __('Activity') }}
@@ -85,6 +91,9 @@
                     <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('admin.notifications.index')" :active="request()->routeIs('admin.notifications.*')">
+                        {{ __('Notifications') }}
+                    </x-responsive-nav-link>
                     <x-responsive-nav-link :href="route('events.index')" :active="request()->routeIs('events.*')">
                         {{ __('Events') }}
                     </x-responsive-nav-link>
@@ -96,6 +105,9 @@
                 @if (Auth::user()->isEmployee())
                     <x-responsive-nav-link :href="route('employee.home')" :active="request()->routeIs('employee.home')">
                         {{ __('Home') }}
+                    </x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('employee.notifications.index')" :active="request()->routeIs('employee.notifications.*')">
+                        {{ __('Notifications') }}
                     </x-responsive-nav-link>
                     <x-responsive-nav-link :href="route('employee.activities.index')" :active="request()->routeIs('employee.activities.*')">
                         {{ __('Activity') }}

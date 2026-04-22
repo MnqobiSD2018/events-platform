@@ -10,6 +10,8 @@ use App\Http\Controllers\EmployeeHomeController;
 use App\Http\Controllers\EmployeeAnnouncementController;
 use App\Http\Controllers\EmployeeActivityController;
 use App\Http\Controllers\EmployeeTrackerIntegrationController;
+use App\Http\Controllers\AdminNotificationController;
+use App\Http\Controllers\EmployeeNotificationController;
 use App\Http\Middleware\EnsureUserType;
 use Illuminate\Auth\Middleware\Authenticate;
 use Illuminate\Auth\Middleware\EnsureEmailIsVerified;
@@ -31,6 +33,8 @@ Route::middleware([Authenticate::class, EnsureEmailIsVerified::class])->group(fu
         Route::post('/events/{event}/import-csv', [EventController::class, 'importCsv'])->name('events.import.csv');
         Route::get('/events/{event}/report', [EventController::class, 'report'])->name('events.report');
         Route::get('/scanner', [CheckinController::class, 'scanner'])->name('checkin.scanner');
+        Route::get('/admin/notifications', [AdminNotificationController::class, 'index'])->name('admin.notifications.index');
+        Route::post('/admin/notifications', [AdminNotificationController::class, 'store'])->name('admin.notifications.store');
     });
 
     Route::prefix('employee')->name('employee.')->middleware(EnsureUserType::class.':employee')->group(function () {
@@ -42,6 +46,9 @@ Route::middleware([Authenticate::class, EnsureEmailIsVerified::class])->group(fu
         Route::get('/integrations', [EmployeeTrackerIntegrationController::class, 'index'])->name('integrations.index');
         Route::post('/integrations/{provider}/connect', [EmployeeTrackerIntegrationController::class, 'connect'])->name('integrations.connect');
         Route::post('/integrations/import', [EmployeeTrackerIntegrationController::class, 'import'])->name('integrations.import');
+        Route::get('/notifications', [EmployeeNotificationController::class, 'index'])->name('notifications.index');
+        Route::patch('/notifications/{notification}/read', [EmployeeNotificationController::class, 'markRead'])->name('notifications.read');
+        Route::post('/notifications/read-all', [EmployeeNotificationController::class, 'markAllRead'])->name('notifications.read-all');
     });
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
