@@ -12,49 +12,57 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    @if (Auth::user()->isCompanyAdmin())
-                        <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                            {{ __('Dashboard') }}
-                        </x-nav-link>
-                        <x-nav-link :href="route('events.index')" :active="request()->routeIs('events.*')">
-                            {{ __('Events') }}
-                        </x-nav-link>
-                        <x-nav-link :href="route('checkin.scanner')" :active="request()->routeIs('checkin.scanner')">
-                            {{ __('Scanner') }}
-                        </x-nav-link>
-                    @endif
+                    @auth
+                        @if (Auth::user()->isCompanyAdmin())
+                            <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                                {{ __('Dashboard') }}
+                            </x-nav-link>
+                            <x-nav-link :href="route('events.index')" :active="request()->routeIs('events.*')">
+                                {{ __('Events') }}
+                            </x-nav-link>
+                            <x-nav-link :href="route('checkin.scanner')" :active="request()->routeIs('checkin.scanner')">
+                                {{ __('Scanner') }}
+                            </x-nav-link>
+                        @endif
 
-                    @if (Auth::user()->isEmployee())
-                        <x-nav-link :href="route('employee.home')" :active="request()->routeIs('employee.home')">
-                            {{ __('Home') }}
-                        </x-nav-link>
-                        <x-nav-link :href="route('employee.activities.index')" :active="request()->routeIs('employee.activities.*')">
-                            {{ __('Activity') }}
-                        </x-nav-link>
-                        <x-nav-link :href="route('employee.integrations.index')" :active="request()->routeIs('employee.integrations.*')">
-                            {{ __('Integrations') }}
-                        </x-nav-link>
-                        <x-nav-link :href="route('employee.announcements.index')" :active="request()->routeIs('employee.announcements.*')">
-                            {{ __('Announcements') }}
-                        </x-nav-link>
-                    @endif
+                        @if (Auth::user()->isEmployee())
+                            <x-nav-link :href="route('employee.home')" :active="request()->routeIs('employee.home')">
+                                {{ __('Home') }}
+                            </x-nav-link>
+                            <x-nav-link :href="route('employee.activities.index')" :active="request()->routeIs('employee.activities.*')">
+                                {{ __('Activity') }}
+                            </x-nav-link>
+                            <x-nav-link :href="route('employee.integrations.index')" :active="request()->routeIs('employee.integrations.*')">
+                                {{ __('Integrations') }}
+                            </x-nav-link>
+                            <x-nav-link :href="route('employee.announcements.index')" :active="request()->routeIs('employee.announcements.*')">
+                                {{ __('Announcements') }}
+                            </x-nav-link>
+                        @endif
+                    @endauth
                 </div>
             </div>
 
             <!-- Account Controls -->
             <div class="hidden sm:flex sm:items-center sm:ms-6 sm:gap-3">
-                <span class="text-sm font-medium text-slate-700">{{ Auth::user()->name }}</span>
+                @auth
+                    <span class="text-sm font-medium text-slate-700">{{ Auth::user()->name }}</span>
 
-                <a href="{{ route('profile.edit') }}" class="inline-flex items-center rounded-lg border border-teal-100 bg-teal-50/70 px-3 py-2 text-sm font-medium text-teal-900 hover:bg-teal-100/80 transition ease-in-out duration-150">
-                    {{ __('Profile') }}
-                </a>
+                    <a href="{{ route('profile.edit') }}" class="inline-flex items-center rounded-lg border border-teal-100 bg-teal-50/70 px-3 py-2 text-sm font-medium text-teal-900 hover:bg-teal-100/80 transition ease-in-out duration-150">
+                        {{ __('Profile') }}
+                    </a>
 
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <button type="submit" class="inline-flex items-center rounded-lg border border-rose-200 bg-rose-50 px-3 py-2 text-sm font-medium text-rose-700 hover:bg-rose-100 transition ease-in-out duration-150">
-                        {{ __('Log Out') }}
-                    </button>
-                </form>
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit" class="inline-flex items-center rounded-lg border border-rose-200 bg-rose-50 px-3 py-2 text-sm font-medium text-rose-700 hover:bg-rose-100 transition ease-in-out duration-150">
+                            {{ __('Log Out') }}
+                        </button>
+                    </form>
+                @else
+                    <a href="{{ route('login') }}" class="inline-flex items-center rounded-lg border border-teal-100 bg-teal-50/70 px-3 py-2 text-sm font-medium text-teal-900 hover:bg-teal-100/80 transition ease-in-out duration-150">
+                        {{ __('Log In') }}
+                    </a>
+                @endauth
             </div>
 
             <!-- Hamburger -->
@@ -72,54 +80,64 @@
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
-            @if (Auth::user()->isCompanyAdmin())
-                <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                    {{ __('Dashboard') }}
-                </x-responsive-nav-link>
-                <x-responsive-nav-link :href="route('events.index')" :active="request()->routeIs('events.*')">
-                    {{ __('Events') }}
-                </x-responsive-nav-link>
-                <x-responsive-nav-link :href="route('checkin.scanner')" :active="request()->routeIs('checkin.scanner')">
-                    {{ __('Scanner') }}
-                </x-responsive-nav-link>
-            @endif
+            @auth
+                @if (Auth::user()->isCompanyAdmin())
+                    <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                        {{ __('Dashboard') }}
+                    </x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('events.index')" :active="request()->routeIs('events.*')">
+                        {{ __('Events') }}
+                    </x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('checkin.scanner')" :active="request()->routeIs('checkin.scanner')">
+                        {{ __('Scanner') }}
+                    </x-responsive-nav-link>
+                @endif
 
-            @if (Auth::user()->isEmployee())
-                <x-responsive-nav-link :href="route('employee.home')" :active="request()->routeIs('employee.home')">
-                    {{ __('Home') }}
-                </x-responsive-nav-link>
-                <x-responsive-nav-link :href="route('employee.activities.index')" :active="request()->routeIs('employee.activities.*')">
-                    {{ __('Activity') }}
-                </x-responsive-nav-link>
-                <x-responsive-nav-link :href="route('employee.integrations.index')" :active="request()->routeIs('employee.integrations.*')">
-                    {{ __('Integrations') }}
-                </x-responsive-nav-link>
-                <x-responsive-nav-link :href="route('employee.announcements.index')" :active="request()->routeIs('employee.announcements.*')">
-                    {{ __('Announcements') }}
-                </x-responsive-nav-link>
-            @endif
+                @if (Auth::user()->isEmployee())
+                    <x-responsive-nav-link :href="route('employee.home')" :active="request()->routeIs('employee.home')">
+                        {{ __('Home') }}
+                    </x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('employee.activities.index')" :active="request()->routeIs('employee.activities.*')">
+                        {{ __('Activity') }}
+                    </x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('employee.integrations.index')" :active="request()->routeIs('employee.integrations.*')">
+                        {{ __('Integrations') }}
+                    </x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('employee.announcements.index')" :active="request()->routeIs('employee.announcements.*')">
+                        {{ __('Announcements') }}
+                    </x-responsive-nav-link>
+                @endif
+            @endauth
         </div>
 
         <!-- Responsive Settings Options -->
         <div class="pt-4 pb-1 border-t border-slate-200">
-            <div class="px-4">
-                <div class="font-medium text-base text-slate-900">{{ Auth::user()->name }}</div>
-                <div class="font-medium text-sm text-slate-500">{{ Auth::user()->email }}</div>
-            </div>
+            @auth
+                <div class="px-4">
+                    <div class="font-medium text-base text-slate-900">{{ Auth::user()->name }}</div>
+                    <div class="font-medium text-sm text-slate-500">{{ Auth::user()->email }}</div>
+                </div>
 
-            <div class="mt-3 space-y-1">
-                <x-responsive-nav-link :href="route('profile.edit')">
-                    {{ __('Profile') }}
-                </x-responsive-nav-link>
+                <div class="mt-3 space-y-1">
+                    <x-responsive-nav-link :href="route('profile.edit')">
+                        {{ __('Profile') }}
+                    </x-responsive-nav-link>
 
-                <!-- Authentication -->
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <button type="submit" class="block w-full px-4 py-2 text-left text-sm font-medium text-rose-700 transition duration-150 ease-in-out hover:bg-rose-50">
-                        {{ __('Log Out') }}
-                    </button>
-                </form>
-            </div>
+                    <!-- Authentication -->
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit" class="block w-full px-4 py-2 text-left text-sm font-medium text-rose-700 transition duration-150 ease-in-out hover:bg-rose-50">
+                            {{ __('Log Out') }}
+                        </button>
+                    </form>
+                </div>
+            @else
+                <div class="mt-3 space-y-1">
+                    <x-responsive-nav-link :href="route('login')">
+                        {{ __('Log In') }}
+                    </x-responsive-nav-link>
+                </div>
+            @endauth
         </div>
     </div>
 </nav>
