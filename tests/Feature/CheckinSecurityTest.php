@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Attendance;
 use App\Models\Event;
 use App\Models\Participant;
 use App\Models\User;
@@ -46,7 +47,48 @@ class CheckinSecurityTest extends TestCase
             ->assertNotFound();
     }
 
-    private function createParticipant(): Participant
+    public function test_signed_checkin_creates_employee_profile_when_missing(): void
+    {
+        $participant = $this->createParticipant('new.employee@example.com');
+
+        $this->assertDatabaseMissing('users', [
+            'email' => 'new.employee@example.com',
+        ]);
+
+        $signedUrl = URL::signedRoute('checkin.scan', ['participant' => $participant->id]);
+
+        $this->get($signedUrl)->assertOk();
+
+        $this->assertDatabaseHas('users', [
+            'email' => 'new.employee@example.com',
+            'user_type' => User::TYPE_EMPLOYEE,
+        ]);
+    }
+
+    public function test_logged_in_employee_scanning_their_own_qr_is_redirected_home(): void
+    {
+        $participantEmail = 'scanner.employee@example.com';
+        $participant = $this->createParticipant($participantEmail);
+
+        $employee = User::factory()->employee()->create([
+            'email' => $participantEmail,
+        ]);
+
+        $signedUrl = URL::signedRoute('checkin.scan', ['participant' => $participant->id]);
+
+        $this->actingAs($employee)
+            ->get($signedUrl)
+            ->assertRedirect(route('home'));
+
+        $this->assertTrue(
+            Attendance::where('participant_id', $participant->id)
+                ->where('event_id', $participant->event_id)
+                ->whereNotNull('checked_in_at')
+                ->exists()
+        );
+    }
+
+    private function createParticipant(string $email = 'security@example.com'): Participant
     {
         $user = User::factory()->create();
 
@@ -60,7 +102,7 @@ class CheckinSecurityTest extends TestCase
 
         return Participant::create([
             'name' => 'Security Participant',
-            'email' => 'security@example.com',
+            'email' => $email,
             'department' => 'IT',
             'qr_code' => 'security-qr-code',
             'event_id' => $event->id,

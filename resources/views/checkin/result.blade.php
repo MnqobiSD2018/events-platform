@@ -13,6 +13,16 @@
             <p class="mt-1 text-sm {{ $success ? 'text-emerald-800' : 'text-amber-800' }}">
                 Event ID: {{ $participant->event_id }}
             </p>
+
+            @if ($accountCreated ?? false)
+                <p class="mt-3 text-sm {{ $success ? 'text-emerald-800' : 'text-amber-800' }}">
+                    A new employee profile was created for this email. Use "Forgot password" on the login page to set your password.
+                </p>
+            @else
+                <p class="mt-3 text-sm {{ $success ? 'text-emerald-800' : 'text-amber-800' }}">
+                    An employee profile already exists for this email. You can log in to access your dashboard.
+                </p>
+            @endif
         </div>
 
         <div class="mt-5 flex items-center gap-3">
