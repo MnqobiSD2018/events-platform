@@ -1,0 +1,66 @@
+@import url('https://fonts.bunny.net/css?family=space+grotesk:400,500,600,700|ibm+plex+mono:500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+	:root {
+		--brand-ink: #1f2933;
+		--brand-muted: #4c6477;
+		--brand-accent: #0f766e;
+		--brand-accent-strong: #0b5f59;
+		--brand-highlight: #f59e0b;
+		--brand-paper: #f7f4ee;
+	}
+
+	html,
+	body {
+		min-height: 100%;
+	}
+
+	body {
+		color: var(--brand-ink);
+		background:
+			radial-gradient(circle at 8% 2%, rgba(245, 158, 11, 0.25), transparent 35%),
+			radial-gradient(circle at 90% 5%, rgba(15, 118, 110, 0.2), transparent 40%),
+			linear-gradient(180deg, #fffaf0 0%, var(--brand-paper) 45%, #f0eee8 100%);
+	}
+
+	h1,
+	h2,
+	h3,
+	h4,
+	h5,
+	h6 {
+		letter-spacing: -0.02em;
+	}
+}
+
+@layer components {
+	.brand-panel {
+		@apply rounded-2xl border border-white/60 bg-white/90 shadow-lg shadow-slate-900/5 backdrop-blur;
+	}
+
+	.brand-kicker {
+		@apply inline-flex items-center rounded-full border border-teal-200 bg-teal-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-teal-800;
+	}
+}
+
+@layer utilities {
+	.brand-enter {
+		animation: brand-enter 420ms ease-out;
+	}
+
+	@keyframes brand-enter {
+		from {
+			opacity: 0;
+			transform: translateY(10px);
+		}
+
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+}
