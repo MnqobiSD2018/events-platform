@@ -35,14 +35,8 @@
                             <x-nav-link :href="route('employee.notifications.index')" :active="request()->routeIs('employee.notifications.*')">
                                 {{ __('Notifications') }}
                             </x-nav-link>
-                            <x-nav-link :href="route('employee.activities.index')" :active="request()->routeIs('employee.activities.*')">
-                                {{ __('Activity') }}
-                            </x-nav-link>
-                            <x-nav-link :href="route('employee.integrations.index')" :active="request()->routeIs('employee.integrations.*')">
-                                {{ __('Integrations') }}
-                            </x-nav-link>
-                            <x-nav-link :href="route('employee.announcements.index')" :active="request()->routeIs('employee.announcements.*')">
-                                {{ __('Announcements') }}
+                            <x-nav-link :href="route('employee.health.index')" :active="request()->routeIs('employee.health.*') || request()->routeIs('employee.activities.*')">
+                                {{ __('Health Stats') }}
                             </x-nav-link>
                         @endif
                     @endauth
@@ -109,14 +103,8 @@
                     <x-responsive-nav-link :href="route('employee.notifications.index')" :active="request()->routeIs('employee.notifications.*')">
                         {{ __('Notifications') }}
                     </x-responsive-nav-link>
-                    <x-responsive-nav-link :href="route('employee.activities.index')" :active="request()->routeIs('employee.activities.*')">
-                        {{ __('Activity') }}
-                    </x-responsive-nav-link>
-                    <x-responsive-nav-link :href="route('employee.integrations.index')" :active="request()->routeIs('employee.integrations.*')">
-                        {{ __('Integrations') }}
-                    </x-responsive-nav-link>
-                    <x-responsive-nav-link :href="route('employee.announcements.index')" :active="request()->routeIs('employee.announcements.*')">
-                        {{ __('Announcements') }}
+                    <x-responsive-nav-link :href="route('employee.health.index')" :active="request()->routeIs('employee.health.*') || request()->routeIs('employee.activities.*')">
+                        {{ __('Health Stats') }}
                     </x-responsive-nav-link>
                 @endif
             @endauth

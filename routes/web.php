@@ -39,6 +39,7 @@ Route::middleware([Authenticate::class, EnsureEmailIsVerified::class])->group(fu
 
     Route::prefix('employee')->name('employee.')->middleware(EnsureUserType::class.':employee')->group(function () {
         Route::get('/home', [EmployeeHomeController::class, 'index'])->name('home');
+        Route::get('/health', [EmployeeActivityController::class, 'index'])->name('health.index');
         Route::get('/announcements', [EmployeeAnnouncementController::class, 'index'])->name('announcements.index');
         Route::post('/announcements/{announcement}/read', [EmployeeAnnouncementController::class, 'markAsRead'])->name('announcements.read');
         Route::get('/activities', [EmployeeActivityController::class, 'index'])->name('activities.index');

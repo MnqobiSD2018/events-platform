@@ -45,6 +45,32 @@
 	.brand-kicker {
 		@apply inline-flex items-center rounded-full border border-teal-200 bg-teal-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-teal-800;
 	}
+
+	.landing-hero {
+		min-height: clamp(32rem, 72vh, 50rem);
+	}
+
+	.landing-hero-bg,
+	.landing-hero-overlay {
+		position: absolute;
+		inset: 0;
+	}
+
+	.landing-hero-bg {
+		background-size: cover;
+		background-position: center 35%;
+		transform: scale(1.01);
+	}
+
+	.landing-hero-overlay {
+		background:
+			linear-gradient(115deg, rgba(5, 31, 34, 0.66) 6%, rgba(9, 43, 45, 0.54) 38%, rgba(4, 20, 30, 0.42) 100%),
+			radial-gradient(circle at 80% 18%, rgba(245, 158, 11, 0.22), transparent 46%);
+	}
+
+	.landing-hero-card {
+		box-shadow: 0 24px 46px rgba(2, 18, 21, 0.26);
+	}
 }
 
 @layer utilities {

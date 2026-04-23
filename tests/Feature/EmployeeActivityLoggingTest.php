@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\ActivityLog;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -10,21 +11,23 @@ class EmployeeActivityLoggingTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_employee_can_log_activity_and_view_it(): void
+    public function test_employee_can_view_tracker_driven_health_stats(): void
     {
         $employee = User::factory()->employee()->create();
 
-        $this->actingAs($employee)
-            ->post(route('employee.activities.store'), [
-                'activity_date' => now()->toDateString(),
-                'workout_type' => 'run',
-                'steps' => 6400,
-                'runs' => 1,
-                'distance_km' => 6.4,
-                'duration_minutes' => 42,
-                'notes' => 'Evening run',
-            ])
-            ->assertRedirect(route('employee.activities.index'));
+        ActivityLog::create([
+            'user_id' => $employee->id,
+            'activity_date' => now()->toDateString(),
+            'workout_type' => 'run',
+            'steps' => 6400,
+            'runs' => 1,
+            'distance_km' => 6.4,
+            'duration_minutes' => 42,
+            'source' => 'imported',
+            'provider' => 'fitbit',
+            'notes' => 'Evening run',
+            'raw_payload' => [],
+        ]);
 
         $this->assertDatabaseHas('activity_logs', [
             'user_id' => $employee->id,
@@ -32,22 +35,23 @@ class EmployeeActivityLoggingTest extends TestCase
             'steps' => 6400,
             'runs' => 1,
             'duration_minutes' => 42,
-            'source' => 'manual',
+            'source' => 'imported',
         ]);
 
         $this->actingAs($employee)
-            ->get(route('employee.activities.index'))
+            ->get(route('employee.health.index'))
             ->assertOk()
-            ->assertSeeText('Activity Logging')
-            ->assertSeeText('Recent Activity');
+            ->assertSeeText('Health Stats')
+            ->assertSeeText('Recent Tracker Activity')
+            ->assertSeeText('Tracker Connections');
     }
 
-    public function test_activity_log_requires_at_least_one_metric(): void
+    public function test_employee_cannot_submit_manual_health_entry(): void
     {
         $employee = User::factory()->employee()->create();
 
         $this->actingAs($employee)
-            ->from(route('employee.activities.index'))
+            ->from(route('employee.health.index'))
             ->post(route('employee.activities.store'), [
                 'activity_date' => now()->toDateString(),
                 'workout_type' => 'walk',
@@ -56,8 +60,7 @@ class EmployeeActivityLoggingTest extends TestCase
                 'distance_km' => 0,
                 'duration_minutes' => 0,
             ])
-            ->assertRedirect(route('employee.activities.index'))
-            ->assertSessionHasErrors('metrics');
+            ->assertForbidden();
     }
 
     public function test_company_admin_cannot_access_employee_activity_routes(): void
@@ -66,7 +69,7 @@ class EmployeeActivityLoggingTest extends TestCase
         $admin = User::factory()->createOne();
 
         $this->actingAs($admin)
-            ->get(route('employee.activities.index'))
+            ->get(route('employee.health.index'))
             ->assertForbidden();
     }
 }

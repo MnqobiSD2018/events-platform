@@ -2,32 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Announcement;
 use App\Models\ActivityLog;
+use App\Services\TrackerLeaderboardService;
 use Illuminate\Support\Facades\Auth;
 
 class EmployeeHomeController extends Controller
 {
-    public function index()
+    public function index(TrackerLeaderboardService $leaderboardService)
     {
         $user = Auth::user();
 
-        $totalAnnouncements = Announcement::query()->count();
-        $unreadAnnouncements = Announcement::query()
-            ->whereDoesntHave('reads', function ($query) use ($user) {
-                $query->where('user_id', $user->id);
-            })
-            ->count();
+        $totalNotifications = $user->notifications()->count();
+        $unreadNotifications = $user->unreadNotifications()->count();
 
-        $recentAnnouncements = Announcement::query()
-            ->latest('published_at')
-            ->latest('id')
+        $recentNotifications = $user->notifications()
+            ->latest('created_at')
             ->limit(5)
             ->get();
-
-        $readAnnouncementIds = $user->announcementReads()
-            ->pluck('announcement_id')
-            ->all();
 
         $activitySummary = ActivityLog::query()
             ->where('user_id', $user->id)
@@ -45,13 +36,18 @@ class EmployeeHomeController extends Controller
             ->limit(5)
             ->get();
 
+        $leaderboard = $leaderboardService->leaderboard(30);
+        $leaderboardPreview = $leaderboard->take(5);
+        $leaderboardCurrentUser = $leaderboardService->currentUserRank($user, 30);
+
         return view('employee.home', compact(
-            'totalAnnouncements',
-            'unreadAnnouncements',
-            'recentAnnouncements',
-            'readAnnouncementIds',
+            'totalNotifications',
+            'unreadNotifications',
+            'recentNotifications',
             'activitySummary',
-            'recentActivities'
+            'recentActivities',
+            'leaderboardPreview',
+            'leaderboardCurrentUser'
         ));
     }
 }

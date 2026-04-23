@@ -42,29 +42,49 @@
         </nav>
 
         <main class="flex-1">
-            <section class="relative py-16 sm:py-24 lg:py-32">
-                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div class="text-center brand-enter">
-                        <p class="brand-kicker justify-center">Event Management Made Simple</p>
-                        <h1 class="mt-4 text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-slate-900">
-                            Plan. Scan. Measure.
-                        </h1>
-                        <p class="mt-6 text-lg sm:text-xl text-slate-600 max-w-3xl mx-auto">
-                            A complete platform for managing corporate events. Organize participants, track attendance with QR codes, and measure success with real-time analytics.
-                        </p>
-                        <div class="mt-10 flex flex-col sm:flex-row gap-4 justify-center items-center">
-                            @auth
-                                <a href="{{ route('home') }}" class="inline-flex items-center rounded-lg border border-teal-700 bg-teal-700 px-6 py-3 text-sm font-semibold text-white hover:bg-teal-600 transition duration-150">
-                                    Open Dashboard →
-                                </a>
-                            @else
-                                <a href="{{ route('register') }}" class="inline-flex items-center rounded-lg border border-teal-700 bg-teal-700 px-6 py-3 text-sm font-semibold text-white hover:bg-teal-600 transition duration-150">
-                                    Get Started Free
-                                </a>
-                                <a href="{{ route('login') }}" class="inline-flex items-center rounded-lg border border-slate-300 bg-white px-6 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition duration-150">
-                                    Sign In
-                                </a>
-                            @endauth
+            <section class="landing-hero relative overflow-hidden py-16 sm:py-24 lg:py-28">
+                <div class="landing-hero-bg" style="background-image: url('{{ asset('images/hero-bg.jpg') }}');" aria-hidden="true"></div>
+                <div class="landing-hero-overlay" aria-hidden="true"></div>
+
+                <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="grid gap-10 lg:grid-cols-2 lg:items-end">
+                        <div class="brand-enter">
+                            <p class="brand-kicker !border-white/40 !bg-white/15 !text-white/95">Event Management Made Simple</p>
+                            <h1 class="mt-5 text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white">
+                                Run Corporate Events
+                                <span class="block text-amber-300">With Confidence</span>
+                            </h1>
+                            <p class="mt-6 max-w-xl text-base sm:text-lg text-white/85">
+                                A complete platform for participant onboarding, secure QR check-in, and real-time attendance insights across every event.
+                            </p>
+                            <div class="mt-8 flex flex-wrap items-center gap-4 text-sm text-white/85">
+                                <span class="inline-flex items-center gap-2 rounded-full border border-white/35 bg-white/10 px-3 py-1.5">CSV participant import</span>
+                                <span class="inline-flex items-center gap-2 rounded-full border border-white/35 bg-white/10 px-3 py-1.5">Signed QR check-in</span>
+                                <span class="inline-flex items-center gap-2 rounded-full border border-white/35 bg-white/10 px-3 py-1.5">Live performance tracking</span>
+                            </div>
+                        </div>
+
+                        <div class="brand-enter">
+                            <div class="landing-hero-card rounded-3xl border border-white/30 bg-white/12 p-6 sm:p-8 backdrop-blur-md">
+                                <p class="text-xs font-semibold uppercase tracking-[0.2em] text-white/80">Start Operations</p>
+                                <h2 class="mt-3 text-2xl sm:text-3xl font-semibold text-white">Plan. Scan. Measure.</h2>
+                                <p class="mt-3 text-sm sm:text-base text-white/80">Launch your next event cycle with role-based workflows for admins and employees.</p>
+
+                                <div class="mt-6 flex flex-col sm:flex-row gap-3">
+                                    @auth
+                                        <a href="{{ route('home') }}" class="inline-flex items-center justify-center rounded-lg border border-teal-400 bg-teal-600 px-6 py-3 text-sm font-semibold text-white hover:bg-teal-500 transition duration-150">
+                                            Open Dashboard
+                                        </a>
+                                    @else
+                                        <a href="{{ route('register') }}" class="inline-flex items-center justify-center rounded-lg border border-teal-400 bg-teal-600 px-6 py-3 text-sm font-semibold text-white hover:bg-teal-500 transition duration-150">
+                                            Get Started Free
+                                        </a>
+                                        <a href="{{ route('login') }}" class="inline-flex items-center justify-center rounded-lg border border-white/45 bg-white/15 px-6 py-3 text-sm font-semibold text-white hover:bg-white/25 transition duration-150">
+                                            Sign In
+                                        </a>
+                                    @endauth
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

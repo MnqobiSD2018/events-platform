@@ -43,6 +43,16 @@
                 </a>
             </div>
 
+            <div class="mt-6">
+                @include('partials.tracker-leaderboard', [
+                    'eyebrow' => 'Admin Visibility',
+                    'title' => 'Employee Step Leaderboard',
+                    'description' => 'Leaderboard based on employee tracker activity for running and walking over the last 30 days.',
+                    'periodLabel' => 'Last 30 Days',
+                    'rows' => $leaderboard,
+                ])
+            </div>
+
             <div class="mt-6 brand-panel p-6">
                 <h3 class="text-lg font-semibold text-slate-900">Quick Start</h3>
                 <ol class="mt-3 list-decimal space-y-2 pl-5 text-sm text-slate-700">

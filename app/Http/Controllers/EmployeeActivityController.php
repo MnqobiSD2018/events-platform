@@ -3,13 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\ActivityLog;
+use App\Services\TrackerLeaderboardService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class EmployeeActivityController extends Controller
 {
-    public function index()
+    public function index(TrackerLeaderboardService $leaderboardService)
     {
         $user = Auth::user();
 
@@ -26,40 +27,32 @@ class EmployeeActivityController extends Controller
             ->selectRaw('COALESCE(SUM(duration_minutes), 0) as total_duration')
             ->first();
 
-        return view('employee.activities.index', compact('activities', 'summary'));
+        $connections = $user->trackerConnections()
+            ->orderBy('provider')
+            ->get()
+            ->keyBy('provider');
+
+        $recentImports = $user->trackerSyncImports()
+            ->latest('id')
+            ->limit(5)
+            ->get();
+
+        $leaderboard = $leaderboardService->leaderboard(30);
+        $leaderboardPreview = $leaderboard->take(5);
+        $leaderboardCurrentUser = $leaderboardService->currentUserRank($user, 30);
+
+        return view('employee.activities.index', compact(
+            'activities',
+            'summary',
+            'connections',
+            'recentImports',
+            'leaderboardPreview',
+            'leaderboardCurrentUser'
+        ));
     }
 
     public function store(Request $request): RedirectResponse
     {
-        $validated = $request->validate([
-            'activity_date' => ['required', 'date'],
-            'workout_type' => ['required', 'string', 'in:run,walk,cycle,gym,yoga,other'],
-            'steps' => ['nullable', 'integer', 'min:0'],
-            'runs' => ['nullable', 'integer', 'min:0'],
-            'distance_km' => ['nullable', 'numeric', 'min:0'],
-            'duration_minutes' => ['nullable', 'integer', 'min:0'],
-            'notes' => ['nullable', 'string', 'max:500'],
-        ]);
-
-        $hasMetric =
-            (int) ($validated['steps'] ?? 0) > 0 ||
-            (int) ($validated['runs'] ?? 0) > 0 ||
-            (float) ($validated['distance_km'] ?? 0) > 0 ||
-            (int) ($validated['duration_minutes'] ?? 0) > 0;
-
-        if (! $hasMetric) {
-            return back()->withErrors([
-                'metrics' => 'Provide at least one metric: steps, runs, distance, or duration.',
-            ])->withInput();
-        }
-
-        Auth::user()->activityLogs()->create([
-            ...$validated,
-            'source' => 'manual',
-            'provider' => null,
-            'raw_payload' => null,
-        ]);
-
-        return redirect()->route('employee.activities.index')->with('success', 'Activity logged successfully.');
+        abort(403);
     }
 }

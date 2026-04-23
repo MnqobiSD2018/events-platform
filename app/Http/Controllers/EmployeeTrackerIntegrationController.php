@@ -56,6 +56,8 @@ class EmployeeTrackerIntegrationController extends Controller
 
     public function import(Request $request): RedirectResponse
     {
+        abort_unless(Auth::user()->isCompanyAdmin(), 403);
+
         $validated = $request->validate([
             'provider' => ['required', 'string', 'in:apple_health,google_fit,garmin,fitbit,strava'],
             'payload' => ['required', 'array'],

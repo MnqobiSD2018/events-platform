@@ -3,7 +3,9 @@
 namespace Tests\Feature;
 
 use App\Models\Announcement;
+use App\Models\BroadcastNotification;
 use App\Models\User;
+use App\Notifications\HrBroadcastNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -24,28 +26,22 @@ class EmployeeHomeTest extends TestCase
     {
         $employee = User::factory()->employee()->create();
 
-        Announcement::create([
+        $broadcast = BroadcastNotification::create([
             'title' => 'HR Policy Update',
-            'body' => 'Remote work policy has been updated.',
+            'message' => 'Remote work policy has been updated.',
             'category' => 'hr',
-            'published_at' => now(),
-            'created_by' => null,
+            'sent_by' => null,
+            'recipient_count' => 1,
         ]);
 
-        Announcement::create([
-            'title' => 'Company Sports Day',
-            'body' => 'Join the annual team sports event this Friday.',
-            'category' => 'company',
-            'published_at' => now()->subMinute(),
-            'created_by' => null,
-        ]);
+        $employee->notify(new HrBroadcastNotification($broadcast));
 
         $this->actingAs($employee)
             ->get(route('employee.home'))
             ->assertOk()
-            ->assertSeeText('Unread Updates')
-            ->assertSeeText('HR Policy Update')
-            ->assertSeeText('Company Sports Day');
+            ->assertSeeText('Unread Notifications')
+            ->assertSeeText('Recent Notifications')
+            ->assertSeeText('HR Policy Update');
     }
 
     public function test_employee_can_filter_announcements_and_mark_as_read(): void
@@ -86,6 +82,7 @@ class EmployeeHomeTest extends TestCase
 
     public function test_company_admin_cannot_access_employee_home(): void
     {
+        /** @var User $admin */
         $admin = User::factory()->createOne();
 
         $this->actingAs($admin)

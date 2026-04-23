@@ -19,12 +19,12 @@
 
             <div class="grid gap-4 md:grid-cols-3">
                 <div class="brand-panel p-5">
-                    <p class="text-sm text-slate-500">Unread Updates</p>
-                    <p class="mt-2 text-3xl font-semibold text-slate-900">{{ $unreadAnnouncements }}</p>
+                    <p class="text-sm text-slate-500">Unread Notifications</p>
+                    <p class="mt-2 text-3xl font-semibold text-slate-900">{{ $unreadNotifications }}</p>
                 </div>
                 <div class="brand-panel p-5">
-                    <p class="text-sm text-slate-500">Total Announcements</p>
-                    <p class="mt-2 text-3xl font-semibold text-slate-900">{{ $totalAnnouncements }}</p>
+                    <p class="text-sm text-slate-500">Total Notifications</p>
+                    <p class="mt-2 text-3xl font-semibold text-slate-900">{{ $totalNotifications }}</p>
                 </div>
                 <div class="brand-panel p-5">
                     <p class="text-sm text-slate-500">Department</p>
@@ -55,7 +55,7 @@
                 <div class="brand-panel p-6 lg:col-span-2">
                     <div class="flex items-center justify-between gap-3">
                         <h3 class="text-lg font-semibold text-slate-900">Recent Activity</h3>
-                        <a href="{{ route('employee.activities.index') }}" class="text-sm font-medium text-blue-700 hover:text-blue-500">Log Activity</a>
+                        <a href="{{ route('employee.health.index') }}" class="text-sm font-medium text-blue-700 hover:text-blue-500">View Health Stats</a>
                     </div>
 
                     @if ($recentActivities->count())
@@ -88,49 +88,85 @@
                     @endif
 
                     <div class="mt-6 flex items-center justify-between gap-3">
-                        <h3 class="text-lg font-semibold text-slate-900">Recent Updates</h3>
-                        <a href="{{ route('employee.announcements.index') }}" class="text-sm font-medium text-blue-700 hover:text-blue-500">View All</a>
+                        <h3 class="text-lg font-semibold text-slate-900">Recent Notifications</h3>
+                        <a href="{{ route('employee.notifications.index') }}" class="text-sm font-medium text-blue-700 hover:text-blue-500">View All</a>
                     </div>
 
-                    @if ($recentAnnouncements->count())
+                    @if ($recentNotifications->count())
                         <div class="mt-4 space-y-3">
-                            @foreach ($recentAnnouncements as $announcement)
-                                @php $isRead = in_array($announcement->id, $readAnnouncementIds, true); @endphp
+                            @foreach ($recentNotifications as $notification)
+                                @php
+                                    $isRead = ! is_null($notification->read_at);
+                                    $data = $notification->data;
+                                @endphp
                                 <div class="rounded-lg border border-slate-200 bg-white p-4">
                                     <div class="flex items-start justify-between gap-3">
                                         <div>
-                                            <p class="text-sm font-semibold text-slate-900">{{ $announcement->title }}</p>
-                                            <p class="mt-1 text-xs uppercase tracking-wide text-slate-500">{{ ucfirst($announcement->category) }}</p>
+                                            <p class="text-sm font-semibold text-slate-900">{{ $data['title'] ?? 'Notification' }}</p>
+                                            <p class="mt-1 text-xs uppercase tracking-wide text-slate-500">{{ strtoupper($data['category'] ?? 'general') }}</p>
                                         </div>
                                         <span class="rounded-full px-2.5 py-1 text-xs font-medium {{ $isRead ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800' }}">
                                             {{ $isRead ? 'Read' : 'Unread' }}
                                         </span>
                                     </div>
-                                    <p class="mt-2 text-sm text-slate-700">{{ \Illuminate\Support\Str::limit($announcement->body, 140) }}</p>
+                                    <p class="mt-2 text-sm text-slate-700">{{ \Illuminate\Support\Str::limit($data['message'] ?? '', 140) }}</p>
                                 </div>
                             @endforeach
                         </div>
                     @else
-                        <p class="mt-4 text-sm text-slate-600">No updates yet. Check back later for company and HR announcements.</p>
+                        <p class="mt-4 text-sm text-slate-600">No notifications yet.</p>
                     @endif
                 </div>
 
                 <div class="brand-panel p-6">
                     <h3 class="text-lg font-semibold text-slate-900">Quick Actions</h3>
                     <div class="mt-4 space-y-3">
-                        <a href="{{ route('employee.activities.index') }}" class="block rounded-lg border border-slate-200 px-4 py-3 text-sm font-medium text-slate-800 hover:bg-slate-50">
-                            Log Performance
+                        <a href="{{ route('employee.health.index') }}" class="block rounded-lg border border-slate-200 px-4 py-3 text-sm font-medium text-slate-800 hover:bg-slate-50">
+                            View Health Stats
                         </a>
-                        <a href="{{ route('employee.integrations.index') }}" class="block rounded-lg border border-slate-200 px-4 py-3 text-sm font-medium text-slate-800 hover:bg-slate-50">
-                            Tracker Integrations
-                        </a>
-                        <a href="{{ route('employee.announcements.index') }}" class="block rounded-lg border border-slate-200 px-4 py-3 text-sm font-medium text-slate-800 hover:bg-slate-50">
-                            Browse Announcements
+                        <a href="{{ route('employee.notifications.index') }}" class="block rounded-lg border border-slate-200 px-4 py-3 text-sm font-medium text-slate-800 hover:bg-slate-50">
+                            View Notifications
                         </a>
                         <a href="{{ route('profile.edit') }}" class="block rounded-lg border border-slate-200 px-4 py-3 text-sm font-medium text-slate-800 hover:bg-slate-50">
                             Update Profile
                         </a>
                     </div>
+                </div>
+            </div>
+
+            <div class="grid gap-6 lg:grid-cols-3">
+                <div class="lg:col-span-2">
+                    @include('partials.tracker-leaderboard', [
+                        'eyebrow' => 'Employee Leaderboard',
+                        'title' => 'Top Step Movers',
+                        'description' => 'Your ranking is based on tracker activity for running and walking over the last 30 days.',
+                        'periodLabel' => 'Last 30 Days',
+                        'rows' => $leaderboardPreview,
+                        'highlightUserId' => Auth::id(),
+                    ])
+                </div>
+
+                <div class="brand-panel p-6">
+                    <h3 class="text-lg font-semibold text-slate-900">Your Rank</h3>
+                    @if ($leaderboardCurrentUser)
+                        <div class="mt-4 space-y-4">
+                            <div>
+                                <p class="text-sm text-slate-500">Position</p>
+                                <p class="mt-1 text-3xl font-semibold text-slate-900">#{{ $leaderboardCurrentUser->rank }}</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-slate-500">Total Steps</p>
+                                <p class="mt-1 text-2xl font-semibold text-slate-900">{{ number_format((int) $leaderboardCurrentUser->total_steps) }}</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-slate-500">Run / Walk Split</p>
+                                <p class="mt-1 text-sm text-slate-700">{{ number_format((int) $leaderboardCurrentUser->run_steps) }} run steps</p>
+                                <p class="text-sm text-slate-700">{{ number_format((int) $leaderboardCurrentUser->walk_steps) }} walk steps</p>
+                            </div>
+                        </div>
+                    @else
+                        <p class="mt-4 text-sm text-slate-600">You do not have tracker activity in the current leaderboard window yet.</p>
+                    @endif
                 </div>
             </div>
         </div>
